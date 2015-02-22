@@ -24,8 +24,8 @@ def get_opponent_stats(opponent): #Gets summaries of statistics for opponent eac
     for stat in opp_stats.columns:
         if stat != 'OPP':
             opponent_stats.update({stat: opp_stats[stat].mean()})
-    opponent_stats.update({'CON%F': float(opp_stats['CF'])/opp_stats['TF']})
-    opponent_stats.update({'CON%A': float(opp_stats['CA'])/opp_stats['TA']})
+    opponent_stats.update({'CON%F': float(opp_stats['CF'].sum())/opp_stats['TF'].sum()})
+    opponent_stats.update({'CON%A': float(opp_stats['CA'].sum())/opp_stats['TA'].sum()})
     return opponent_stats
 
 def get_residual_performance(team): #Get how each team has done compared to the average performance of their opponents
@@ -37,7 +37,7 @@ def get_residual_performance(team): #Get how each team has done compared to the 
     for week in score_df.index:
         opponent_stats = get_opponent_stats(score_df['OPP'][week])
         for stat in opponent_stats:
-            if week == 1:
+            if week == score_df.index.tolist()[0]:
                 score_df['OPP_' + stat] = np.nan       
             score_df['OPP_' + stat][week] = opponent_stats[stat]
         score_df['CON%F'][week] = float(score_df['CF'][week]) / score_df['TF'][week]
