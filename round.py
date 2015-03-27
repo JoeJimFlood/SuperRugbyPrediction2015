@@ -10,15 +10,16 @@ import os
 
 round_timer = time.time()
 
-round_number = 6
+round_number = 7
 
 matchups = collections.OrderedDict()
-matchups['Friday'] = [('HIGHLANDERS', 'HURRICANES'),
-                      ('REBELS', 'LIONS')]
-matchups['Saturday'] = [('CRUSADERS', 'CHEETAHS'),
-                        ('BULLS', 'FORCE'),
-                        ('SHARKS', 'CHIEFS')]
-matchups['Sunday'] = [('WARATAHS', 'BRUMBIES')]
+matchups['Friday'] = [('HURRICANES', 'REBELS'),
+                      ('REDS', 'LIONS')]
+matchups['Saturday'] = [('CHIEFS', 'CHEETAHS'),
+                        ('HIGHLANDERS', 'STORMERS'),
+                        ('WARATAHS', 'BLUES'),
+                        ('SHARKS', 'FORCE'),
+                        ('BULLS','CRUSADERS')]
 
 location = os.getcwd().replace('\\', '/')
 output_file = location + '/Weekly Forecasts/Round_' + str(round_number) + '.xlsx'
