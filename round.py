@@ -10,15 +10,16 @@ import os
 
 round_timer = time.time()
 
-round_number = 14
+round_number = 15
 
 matchups = collections.OrderedDict()
-matchups['Friday'] = [('BLUES', 'BULLS'),
-                      ('REDS', 'REBELS')]
-matchups['Saturday'] = [('HURRICANES', 'CHIEFS'),
-                        ('WARATAHS', 'SHARKS'),
-                        ('LIONS', 'BRUMBIES'),
-                        ('CHEETAHS', 'HIGHLANDERS')]
+matchups['Friday'] = [('CHIEFS', 'BULLS'),
+                      ('REDS', 'SHARKS')]
+matchups['Saturday'] = [('BLUES', 'HURRICANES'),
+                        ('WARATAHS', 'CRUSADERS'),
+                        ('FORCE', 'HIGHLANDERS'),
+                        ('CHEETAHS', 'LIONS'),
+                        ('STORMERS', 'REBELS')]
 
 location = os.getcwd().replace('\\', '/')
 output_file = location + '/Weekly Forecasts/Round_' + str(round_number) + '.xlsx'
@@ -74,7 +75,7 @@ for read_data in range(2):
                     sheet.write_number(2+i, homecol, home_dist[str(5*i)+'%'], score_format)
                     sheet.write_number(2+i, awaycol, away_dist[str(5*i)+'%'], score_format)
             if i != len(games) - 1:
-                sheet.write_string(0, 3 * i + 3, '   ')
+                sheet.write_string(0, 3 * i + 3, ' ')
             if read_data:
                 for colnum in range(sheet.dim_colmax):
                     sheet.set_column(colnum, colnum, colwidths[sheet.name][colnum])
