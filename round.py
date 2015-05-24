@@ -10,16 +10,16 @@ import os
 
 round_timer = time.time()
 
-round_number = 15
+round_number = 16
 
 matchups = collections.OrderedDict()
-matchups['Friday'] = [('CHIEFS', 'BULLS'),
-                      ('REDS', 'SHARKS')]
-matchups['Saturday'] = [('BLUES', 'HURRICANES'),
-                        ('WARATAHS', 'CRUSADERS'),
-                        ('FORCE', 'HIGHLANDERS'),
-                        ('CHEETAHS', 'LIONS'),
-                        ('STORMERS', 'REBELS')]
+matchups['Friday'] = [('CRUSADERS', 'HURRICANES'),
+                      ('BRUMBIES', 'BULLS'),
+                      ('SHARKS', 'REBELS')]
+matchups['Saturday'] = [('HIGHLANDERS', 'CHIEFS'),
+                        ('FORCE', 'REDS'),
+                        ('STORMERS', 'CHEETAHS'),
+                        ('LIONS', 'WARATAHS')]
 
 location = os.getcwd().replace('\\', '/')
 output_file = location + '/Weekly Forecasts/Round_' + str(round_number) + '.xlsx'
@@ -45,6 +45,10 @@ for read_data in range(2):
         sheet.write_string(2, 0, 'Expected Score', index_format)
         for i in range(1, 20):
             sheet.write_string(2+i, 0, str(5*i) + 'th Percentile Score', index_format)
+        sheet.write_string(22, 0, 'Chance of 4-Try Bonus Point with Win', index_format)
+        sheet.write_string(23, 0, 'Chance of 4-Try Bonus Point with Draw', index_format)
+        sheet.write_string(24, 0, 'Chance of 4-Try Bonus Point with Loss', index_format)
+        sheet.write_string(25, 0, 'Chance of Losing Bonus Point', index_format)
         sheet.freeze_panes(0, 1)
         games = matchups[game_time]
         for i in range(len(games)):
@@ -60,6 +64,9 @@ for read_data in range(2):
                 for rownum in range(2, 22):
                     sheet.write_number(rownum, homecol, data_sheet.cell(rownum, homecol).value, score_format)
                     sheet.write_number(rownum, awaycol, data_sheet.cell(rownum, awaycol).value, score_format)
+                for rownum in range(22, 26):
+                    sheet.write_number(rownum, homecol, data_sheet.cell(rownum, homecol).value, percent_format)
+                    sheet.write_number(rownum, awaycol, data_sheet.cell(rownum, awaycol).value, percent_format)
             else:
                 results = matchup.matchup(home, away)
                 probwin = results['ProbWin']
@@ -67,6 +74,8 @@ for read_data in range(2):
                 sheet.write_number(1, awaycol, probwin[away], percent_format)
                 home_dist = results['Scores'][home]
                 away_dist = results['Scores'][away]
+                home_bp = results['Bonus Points'][home]
+                away_bp = results['Bonus Points'][away]
                 sheet.write_number(2, homecol, home_dist['mean'], score_format)
                 sheet.write_number(2, awaycol, away_dist['mean'], score_format)
                 for i in range(1, 20):
@@ -74,6 +83,14 @@ for read_data in range(2):
                     #print(home_dist[str(5*i)+'%'])
                     sheet.write_number(2+i, homecol, home_dist[str(5*i)+'%'], score_format)
                     sheet.write_number(2+i, awaycol, away_dist[str(5*i)+'%'], score_format)
+                    sheet.write_number(22, homecol, home_bp['4-Try Bonus Point with Win'], percent_format)
+                    sheet.write_number(23, homecol, home_bp['4-Try Bonus Point with Draw'], percent_format)
+                    sheet.write_number(24, homecol, home_bp['4-Try Bonus Point with Loss'], percent_format)
+                    sheet.write_number(25, homecol, home_bp['Losing Bonus Point'], percent_format)
+                    sheet.write_number(22, awaycol, away_bp['4-Try Bonus Point with Win'], percent_format)
+                    sheet.write_number(23, awaycol, away_bp['4-Try Bonus Point with Draw'], percent_format)
+                    sheet.write_number(24, awaycol, away_bp['4-Try Bonus Point with Loss'], percent_format)
+                    sheet.write_number(25, awaycol, away_bp['Losing Bonus Point'], percent_format)
             if i != len(games) - 1:
                 sheet.write_string(0, 3 * i + 3, ' ')
             if read_data:

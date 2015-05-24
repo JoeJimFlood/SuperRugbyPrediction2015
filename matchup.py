@@ -77,36 +77,97 @@ def get_score(expected_scores): #Get the score for a team based on expected scor
             score += 2
         else:
             continue
-    return score
+    if tries >= 4:
+        bp = True
+    else:
+        bp = False
+    return (score, bp)
 
 def game(team_1, team_2,
          expected_scores_1, expected_scores_2,
          playoff = False): #Get two scores and determine a winner
-    score_1 = get_score(expected_scores_1)
-    score_2 = get_score(expected_scores_2)
+    (score_1, bp1) = get_score(expected_scores_1)
+    (score_2, bp2) = get_score(expected_scores_2)
     if score_1 > score_2:
         win_1 = 1
         win_2 = 0
         draw_1 = 0
         draw_2 = 0
+        if bp1:
+            bpw1 = 1
+        else:
+            bpw1 = 0
+        if bp2:
+            bpl2 = 1
+        else:
+            bpl2 = 0
+        bpl1 = 0
+        bpw2 = 0
+        bpd1 = 0
+        bpd2 = 0
+        lbp1 = 0
+        if score_1 - score_2 <= 7:
+            lbp2 = 1
+        else:
+            lbp2 = 0
+
     elif score_2 > score_1:
         win_1 = 0
         win_2 = 1
         draw_1 = 0
         draw_2 = 0
+        if bp1:
+            bpl1 = 1
+        else:
+            bpl1 = 0
+        if bp2:
+            bpw2 = 1
+        else:
+            bpw2 = 0
+        bpw1 = 0
+        bpl2 = 0
+        bpd1 = 0
+        bpd2 = 0
+        lbp2 = 0
+        if score_2 - score_1 <= 7:
+            lbp1 = 1
+        else:
+            lbp1 = 0
     else:
         if playoff:
             win_1 = 0.5
             win_2 = 0.5
             draw_1 = 0
             draw_2 = 0
+            bpw1 = 0
+            bpw2 = 0
+            bpd1 = 0
+            bpd2 = 0
+            bpl1 = 0
+            bpl2 = 0
+            lbp1 = 0
+            lbp2 = 0
         else:
             win_1 = 0
             win_2 = 0
             draw_1 = 1
             draw_2 = 1
-    summary = {team_1: [win_1, draw_1, score_1]}
-    summary.update({team_2: [win_2, draw_2, score_2]})
+            bpw1 = 0
+            bpw2 = 0
+            bpl1 = 0
+            bpl2 = 0
+            lbp1 = 0
+            lbp2 = 0
+        if bp1:
+            bpd1 = 1
+        else:
+            bpd1 = 0
+        if bp2:
+            bpd2 = 1
+        else:
+            bpd2 = 0
+    summary = {team_1: [win_1, draw_1, score_1, bpw1, bpd1, bpl1, lbp1]}
+    summary.update({team_2: [win_2, draw_2, score_2, bpw2, bpd2, bpl2, lbp2]})
     return summary
 
 def get_expected_scores(team_1_stats, team_2_stats, team_1_df, team_2_df): #Get the expected scores for a matchup based on the previous teams' performances
@@ -142,6 +203,14 @@ def matchup(team_1, team_2):
     team_2_wins = 0
     team_1_draws = 0
     team_2_draws = 0
+    team_1_bpw = 0
+    team_2_bpw = 0
+    team_1_bpd = 0
+    team_2_bpd = 0
+    team_1_bpl = 0
+    team_2_bpl = 0
+    team_1_lbp = 0
+    team_2_lbp = 0
     team_1_scores = []
     team_2_scores = []
     i = 0
@@ -156,8 +225,24 @@ def matchup(team_1, team_2):
         team_2_draws += summary[team_2][1]
         team_1_scores.append(summary[team_1][2])
         team_2_scores.append(summary[team_2][2])
+        team_1_bpw += summary[team_1][3]
+        team_2_bpw += summary[team_2][3]
+        team_1_bpd += summary[team_1][4]
+        team_2_bpd += summary[team_2][4]
+        team_1_bpl += summary[team_1][5]
+        team_2_bpl += summary[team_2][5]
+        team_1_lbp += summary[team_1][6]
+        team_2_lbp += summary[team_2][6]
         team_1_prob = float(team_1_wins) / len(team_1_scores)
         team_2_prob = float(team_2_wins) / len(team_2_scores)
+        team_1_bpw_prob = float(team_1_bpw) / len(team_1_scores)
+        team_2_bpw_prob = float(team_2_bpw) / len(team_2_scores)
+        team_1_bpd_prob = float(team_1_bpd) / len(team_1_scores)
+        team_2_bpd_prob = float(team_2_bpd) / len(team_2_scores)
+        team_1_bpl_prob = float(team_1_bpl) / len(team_1_scores)
+        team_2_bpl_prob = float(team_2_bpl) / len(team_2_scores)
+        team_1_lbp_prob = float(team_1_lbp) / len(team_1_scores)
+        team_2_lbp_prob = float(team_2_lbp) / len(team_2_scores)
         if i > 0:
             team_1_prev_prob = float(team_1_prev_wins) / i
             error = team_1_prob - team_1_prev_prob
@@ -174,9 +259,15 @@ def matchup(team_1, team_2):
             summaries['index'][item] = str(int(float(summaries['index'][item][:-1]))) + '%'
         except ValueError:
             continue
+    bonus_points = pd.DataFrame(index = ['4-Try Bonus Point with Win',
+                                         '4-Try Bonus Point with Draw',
+                                         '4-Try Bonus Point with Loss',
+                                         'Losing Bonus Point'])
+    bonus_points[team_1] = [team_1_bpw_prob, team_1_bpd_prob, team_1_bpl_prob, team_1_lbp_prob]
+    bonus_points[team_2] = [team_2_bpw_prob, team_2_bpd_prob, team_2_bpl_prob, team_2_lbp_prob]
     summaries = summaries.set_index('index')
     summaries = summaries.groupby(level = 0).last()
-    output = {'ProbWin': {team_1: team_1_prob, team_2: team_2_prob}, 'Scores': summaries}
+    output = {'ProbWin': {team_1: team_1_prob, team_2: team_2_prob}, 'Scores': summaries, 'Bonus Points': bonus_points}
 
     print(team_1 + '/' + team_2 + ' score distributions computed in ' + str(round(time.time() - ts, 1)) + ' seconds')
 
