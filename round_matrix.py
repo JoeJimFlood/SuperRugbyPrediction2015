@@ -10,11 +10,25 @@ import os
 
 round_timer = time.time()
 
-round_number = 'Qualifiers'
+round_number = 'Q_Matrix'
 
 matchups = collections.OrderedDict()
-matchups['Saturday'] = [('HIGHLANDERS', 'CHIEFS'),
+matchups['HURRICANES'] = [('HURRICANES', 'WARATAHS'),
+                          ('HURRICANES', 'STORMERS'),
+                          ('HURRICANES', 'CHIEFS'),
+                          ('HURRICANES', 'HIGHLANDERS'),
+                          ('HURRICANES', 'BRUMBIES')]
+matchups['WARATAHS'] = [('WARATAHS', 'STORMERS'),
+                        ('WARATAHS', 'CHIEFS'),
+                        ('WARATAHS', 'HIGHLANDERS'),
+                        ('WARATAHS', 'BRUMBIES')]
+matchups['STORMERS'] = [('STORMERS', 'CHIEFS'),
+                        ('STORMERS', 'HIGHLANDERS'),
                         ('STORMERS', 'BRUMBIES')]
+matchups['CHIEFS'] = [('CHIEFS', 'HIGHLANDERS'),
+                      ('CHIEFS', 'BRUMBIES')]
+matchups['HIGHLANDERS'] = [('HIGHLANDERS', 'BRUMBIES')]
+                      
 
 location = os.getcwd().replace('\\', '/')
 output_file = location + '/Weekly Forecasts/Round_' + str(round_number) + '.xlsx'
@@ -59,9 +73,6 @@ for read_data in range(2):
                 for rownum in range(2, 22):
                     sheet.write_number(rownum, homecol, data_sheet.cell(rownum, homecol).value, score_format)
                     sheet.write_number(rownum, awaycol, data_sheet.cell(rownum, awaycol).value, score_format)
-                for rownum in range(22, 26):
-                    sheet.write_number(rownum, homecol, data_sheet.cell(rownum, homecol).value, percent_format)
-                    sheet.write_number(rownum, awaycol, data_sheet.cell(rownum, awaycol).value, percent_format)
             else:
                 results = matchup.matchup(home, away)
                 probwin = results['ProbWin']
@@ -78,14 +89,6 @@ for read_data in range(2):
                     #print(home_dist[str(5*i)+'%'])
                     sheet.write_number(2+i, homecol, home_dist[str(5*i)+'%'], score_format)
                     sheet.write_number(2+i, awaycol, away_dist[str(5*i)+'%'], score_format)
-                    sheet.write_number(22, homecol, home_bp['4-Try Bonus Point with Win'], percent_format)
-                    sheet.write_number(23, homecol, home_bp['4-Try Bonus Point with Draw'], percent_format)
-                    sheet.write_number(24, homecol, home_bp['4-Try Bonus Point with Loss'], percent_format)
-                    sheet.write_number(25, homecol, home_bp['Losing Bonus Point'], percent_format)
-                    sheet.write_number(22, awaycol, away_bp['4-Try Bonus Point with Win'], percent_format)
-                    sheet.write_number(23, awaycol, away_bp['4-Try Bonus Point with Draw'], percent_format)
-                    sheet.write_number(24, awaycol, away_bp['4-Try Bonus Point with Loss'], percent_format)
-                    sheet.write_number(25, awaycol, away_bp['Losing Bonus Point'], percent_format)
             if i != len(games) - 1:
                 sheet.write_string(0, 3 * i + 3, ' ')
             if read_data:

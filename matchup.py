@@ -7,7 +7,7 @@ from numpy import mean
 import time
 import math
 
-po = False
+po = True
 
 teamsheetpath = sys.path[0] + '/teamcsvs/'
 
@@ -217,7 +217,8 @@ def matchup(team_1, team_2):
     error = 1
     while error > 0.000001 or i < 5000000: #Run until convergence after 5 million iterations
         summary = game(team_1, team_2,
-                       expected_scores_1, expected_scores_2)
+                       expected_scores_1, expected_scores_2,
+                       playoff = po)
         team_1_prev_wins = team_1_wins
         team_1_wins += summary[team_1][0]
         team_2_wins += summary[team_2][0]
