@@ -10,11 +10,10 @@ import os
 
 round_timer = time.time()
 
-round_number = 'Semifinals'
+round_number = 'Final'
 
 matchups = collections.OrderedDict()
-matchups['Saturday'] = [('HURRICANES', 'BRUMBIES'),
-                        ('WARATAHS', 'HIGHLANDERS')]
+matchups['Saturday'] = [('HURRICANES', 'HIGHLANDERS')]
 
 location = os.getcwd().replace('\\', '/')
 output_file = location + '/Weekly Forecasts/Round_' + str(round_number) + '.xlsx'
