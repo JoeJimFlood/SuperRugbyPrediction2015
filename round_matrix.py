@@ -10,23 +10,14 @@ import os
 
 round_timer = time.time()
 
-round_number = 'Q_Matrix'
+round_number = 'SF_Matrix'
 
 matchups = collections.OrderedDict()
 matchups['HURRICANES'] = [('HURRICANES', 'WARATAHS'),
-                          ('HURRICANES', 'STORMERS'),
-                          ('HURRICANES', 'CHIEFS'),
                           ('HURRICANES', 'HIGHLANDERS'),
                           ('HURRICANES', 'BRUMBIES')]
-matchups['WARATAHS'] = [('WARATAHS', 'STORMERS'),
-                        ('WARATAHS', 'CHIEFS'),
-                        ('WARATAHS', 'HIGHLANDERS'),
+matchups['WARATAHS'] = [('WARATAHS', 'HIGHLANDERS'),
                         ('WARATAHS', 'BRUMBIES')]
-matchups['STORMERS'] = [('STORMERS', 'CHIEFS'),
-                        ('STORMERS', 'HIGHLANDERS'),
-                        ('STORMERS', 'BRUMBIES')]
-matchups['CHIEFS'] = [('CHIEFS', 'HIGHLANDERS'),
-                      ('CHIEFS', 'BRUMBIES')]
 matchups['HIGHLANDERS'] = [('HIGHLANDERS', 'BRUMBIES')]
                       
 
